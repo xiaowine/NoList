@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
         thread {
             try {
-                val data = Net.post("http://xiaowine.chinanorth3.cloudapp.chinacloudapi.cn:5244/api/public/path") { json(JSONObject("""{"path":"/","password":"","page_num":$page,"page_size":30}""")) }.execute<String>()
+                val data = Net.post("http://alist.xiaowine.cc/api/public/path") { json(JSONObject("""{"path":"/OneDrive","password":"","page_num":$page,"page_size":30}""")) }.execute<String>()
                 val jsonArray = JSONObject(data).getJSONObject("data").getJSONArray("files")
                 if (isInit) total = JSONObject(data).getJSONObject("data").getJSONObject("meta").getInt("total")
                 for (i in 0 until jsonArray.length()) {
