@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClick(position: Int, view: View) {
                 val intent = Intent(activity, PhotoActivity::class.java)
                 val bundle = Bundle()
-                bundle.putString("url", resArray[position].getString("url"))
+                bundle.putString("url", resArray[position].getString("thumb"))
                 bundle.putString("imageInfo", resArray[position].getString("name"))
                 bundle.putString("size", resArray[position].getString("size"))
                 intent.putExtras(bundle)
@@ -93,9 +93,9 @@ class MainActivity : AppCompatActivity() {
         }
         thread {
             try {
-                val data = Net.post("http://alist.xiaowine.cc/api/public/path") { json(JSONObject("""{"path":"/OneDrive","password":"","page_num":$page,"page_size":30}""")) }.execute<String>()
-                val jsonArray = JSONObject(data).getJSONObject("data").getJSONArray("files")
-                if (isInit) total = JSONObject(data).getJSONObject("data").getJSONObject("meta").getInt("total")
+                val data = Net.post("https://alist.xiaowine.cc/api/fs/list") { json(JSONObject("""{"path":"/OneDrive","password":"","page":$page,"per_page":30,"refresh":false}""")) }.execute<String>()
+                val jsonArray = JSONObject(data).getJSONObject("data").getJSONArray("content")
+                if (isInit) total = JSONObject(data).getJSONObject("data").getInt("total")
                 for (i in 0 until jsonArray.length()) {
                     val thisObject = jsonArray.getJSONObject(i)
                     if (thisObject.getInt("type") == 1) {
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     resArray.add(thisObject)
                     recyclerView.post {
-                        val list = arrayListOf(thisObject.getString("name"), formatSize(activity, thisObject.getInt("size").toLong()), thisObject.getString("thumbnail"))
+                        val list = arrayListOf(thisObject.getString("name"), formatSize(activity, thisObject.getInt("size").toLong()), thisObject.getString("thumb"))
                         adapter.addData(list)
                     }
                 }
